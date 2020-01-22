@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="TOURNEE" uuid="5f2cf90f-40b1-4438-a35c-8678182ea121">
+    <data-source source="LOCAL" name="db.sqlite3" uuid="d3997713-91dc-49d7-ab0a-5dccd75eed23">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/db.sqlite3</jdbc-url>
+    </data-source>
+    <data-source source="LOCAL" name="TOURNEE" uuid="27af0e4f-9d84-4bcb-a558-f1077d1b1016">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://packy.db.elephantsql.com:5432/</jdbc-url>
+      <jdbc-url>jdbc:postgresql://packy.db.elephantsql.com:5432/yoooatxz</jdbc-url>
     </data-source>
   </component>
 </project>

@@ -5,13 +5,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('tournee/', include('tournee.urls')),
     path('admin/', admin.site.urls),
-]
-
-
-urlpatterns += [
-    path('', RedirectView.as_view(url='tournee/', permanent=True)),
-]
-
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    path('tournee/', include('tournee.urls')),
+    path('', RedirectView.as_view(url='catalog/')),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
