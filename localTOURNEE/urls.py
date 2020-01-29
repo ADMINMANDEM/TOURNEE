@@ -7,5 +7,5 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('tournee/', include('tournee.urls')),
-    path('', RedirectView.as_view(url='catalog/')),
+    path('', RedirectView.as_view(url='tournee/')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

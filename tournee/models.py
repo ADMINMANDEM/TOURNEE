@@ -3,70 +3,50 @@ from django.db import models
 
 # My models
 class Players(models.Model):
-    player_s_name = models.CharField(db_column="Player's Name", blank=True, null=True, max_length=32)
-    player_s_team = models.CharField(db_column="Player's Team", blank=True, null=True, max_length=32)
+    name = models.CharField(db_column="Player's_Name", blank=True, null=True, max_length=32)
+    team = models.CharField(db_column="Player's_Team", blank=True, null=True, max_length=32)
     username = models.CharField(db_column='Username', blank=True, null=True, max_length=32)
     password = models.CharField(db_column='Password', blank=True, null=True, max_length=16)
-    email = models.CharField(db_column='Email', blank=True, null=True, max_length=64)
+    email = models.EmailField(db_column='Email', blank=True, null=True)
     bio = models.CharField(db_column='Bio', blank=True, null=True, max_length=5000)
     teamid = models.CharField(db_column='TeamID', blank=True, null=True, max_length=8)
 
-    class Meta:
-        managed = False
-        db_table = 'Players'
-
 
 class Teams(models.Model):
-    team_name = models.CharField(db_column='Team Name', blank=True, null=True, max_length=32)
-    players = models.TextField(db_column='Players', blank=True, null=True)
+    team_name = models.CharField(db_column='Team_Name', blank=True, null=True, max_length=32)
+    playernames = models.TextField(db_column='Players', blank=True, null=True)
     captainid = models.ForeignKey(Players, on_delete=models.CASCADE)
-
-    class Meta:
-        managed = False
-        db_table = 'Teams'
 
 
 Players.teamid = models.ForeignKey(Teams, on_delete=models.CASCADE)
 
 
 class Tournaments(models.Model):
-    tournament_name = models.CharField(db_column='Tournament Name', blank=True, null=True, max_length=64)
-    tournament_prize = models.CharField(db_column='Tournament Prize', blank=True, null=True, max_length=5000)
+    tournament_name = models.CharField(db_column='Tournament_Name', blank=True, null=True, max_length=64)
+    tournament_prize = models.CharField(db_column='Tournament_Prize', blank=True, null=True, max_length=5000)
     winners = models.CharField(db_column='Winners', blank=True, null=True, max_length=32)
-    teams = models.TextField(db_column='Teams', blank=True, null=True)
+    teamnames = models.TextField(db_column='Teams', blank=True, null=True)
     creatorid = models.ForeignKey(Players, on_delete=models.CASCADE)
     requirements = models.CharField(db_column='Requirements', blank=True, null=True, max_length=5000)
     rules = models.CharField(db_column='Rules', blank=True, null=True, max_length=5000)
-    time_and_date = models.DateTimeField(auto_now_add=True, db_column='Time and Date', blank=True, null=True)
+    time_and_date = models.DateTimeField(auto_now_add=True, db_column='Time_and_Date', blank=True, null=True)
     scoreboard = models.TextField(db_column='Scoreboard', blank=True, null=True)
-    in_progress = models.BooleanField(db_column='In Progress', blank=True, null=True)
+    in_progress = models.BooleanField(db_column='In_Progress', blank=True, null=True)
     tournamentline = models.IntegerField(db_column='TournamentLine', blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'Tournaments'
 
 
 class TournamentResult(models.Model):
     team_id = models.ForeignKey(Teams, on_delete=models.CASCADE)
     result = models.SmallIntegerField(db_column='Result', blank=True, null=True)
-    number_of_teams = models.SmallIntegerField(db_column='Number of Teams', blank=True, null=True)
+    number_of_teams = models.SmallIntegerField(db_column='Number_of_Teams', blank=True, null=True)
     tournamentid = models.ForeignKey(Tournaments, on_delete=models.CASCADE)
-
-    class Meta:
-        managed = False
-        db_table = 'Tournament Result'
 
 
 class GameScores(models.Model):
-    team_name = models.CharField(db_column='Team Name', blank=True, null=True, max_length=32)
-    team_1_score = models.SmallIntegerField(db_column='Team 1 Score', blank=True, null=True)
-    team_2_score = models.SmallIntegerField(db_column='Team 2 Score', blank=True, null=True)
+    team_name = models.CharField(db_column='Team_Name', blank=True, null=True, max_length=32)
+    team_1_score = models.SmallIntegerField(db_column='Team_1_Score', blank=True, null=True)
+    team_2_score = models.SmallIntegerField(db_column='Team_2_Score', blank=True, null=True)
     matchid = models.ForeignKey(TournamentResult, on_delete=models.CASCADE)
-
-    class Meta:
-        managed = False
-        db_table = 'Game Scores'
 
 
 # BUILT IN DATABASE STUFF
