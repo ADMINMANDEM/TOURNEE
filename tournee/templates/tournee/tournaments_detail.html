@@ -1,0 +1,12 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Title: {{ Tournament.Tournament_Name }}</h1>
+
+  <p><strong>Prize:</strong> <a href="">{{ Tournament.Tournement_Prize }}</a></p> <!-- author detail link not yet defined -->
+  <p><strong>Winners:</strong> {{ Tournament.Winners }}</p>
+  <p><strong>Teams:</strong> {{ Tournament.Teams }}</p>
+  <p><strong>Requirements:</strong> {{ Tournament.Requirements }}</p>
+  <p><strong>Time and date:</strong> {{ Tournament.Time_and_Date }}</p>
+
+{% endblock %}

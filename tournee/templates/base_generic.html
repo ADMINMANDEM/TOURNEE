@@ -16,8 +16,9 @@
       {% block sidebar %}
         <ul class="sidebar-nav">
           <li><a href="{% url 'index' %}">Home</a></li>
-          <li><a href="">All books</a></li>
-          <li><a href="">All authors</a></li>
+          <li><a href="{% url 'tournaments-list' %}">Tournaments</a></li>
+          <li><a href="">View Tournament Details</a></li>
+          <li><a href="">Teams</a></li>
         </ul>
      {% endblock %}
       </div>

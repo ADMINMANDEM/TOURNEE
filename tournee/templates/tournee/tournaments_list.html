@@ -1,0 +1,13 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Tournament List</h1>
+  <ul>
+    {% for Tournaments in object_list %}
+        <li>{{ Tournaments.tournament_name }} - {{ Tournaments.time_and_date|date }} - {{ Tournaments.in_progress }}</li>
+    {% empty %}
+        <li>There are no tournaments.</li>
+    {% endfor %}
+  </ul>
+
+{% endblock %}
