@@ -1,0 +1,13 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Tournament List</h1>
+  <ul>
+    {% for Tournament in tournament_list %}
+        <li><a href="{{ Tournament.get_absolute_url }}">{{ Tournament.tournament_name}}</a> - {{ Tournament.time_and_date|date }} - {{ Tournament.creatorid }}</li>
+    {% empty %}
+        <li>There are no tournaments.</li>
+    {% endfor %}
+  </ul>
+
+{% endblock %}

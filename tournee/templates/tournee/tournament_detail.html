@@ -1,0 +1,35 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+{% load filterseedid %}
+  <h1>Title: {{ tournament.tournament_name }}</h1>
+  <a href="{% url 'edit-tournament' tournament.pk %}">Edit</a>
+  <p><strong>Creator:</strong> <a href="{% url 'player-detail' tournament.creatorid.pk %}">{{ tournament.creatorid.name }}</a></p>
+  <p><strong>Winners:</strong> {{ tournament.winners }} </p>
+  <p><strong>Teams:</strong></p>
+  {% for team in tournament.seed_set.all %}
+      <li><a href="{% url 'team-detail' team.team_id %}">{{ team.team.team_name }} </a>(seed: {{ team.seed }}){% seed_id team team.team.id team.tournament.id as seed_id %}<a href="{% url 'edit-seed' seed_id %}"> Edit seed</a></li>
+  {% endfor %}
+    <br>
+
+    <br>
+  <p><strong>Requirements:</strong> {{ tournament.requirements }} </p>
+  <p><strong>Rules:</strong> {{ tournament.rules }}</p>
+  {% load tz %}
+  {% if tournament.time_and_date < now|utc %}
+    <p class="text-danger"><strong>Finished:</strong> {{ tournament.time_and_date }}</p>
+  {% else %}
+    <p class="text-success"><strong>Will begin:</strong> {{ tournament.time_and_date }}</p>
+  {% endif %}
+<div style="margin-left:20px;margin-top:20px">
+      <hr>
+  </div>
+    <p>Use this output and put it in this <a href="https://bracketing.adminmandem.repl.run">website</a></p>
+
+    <p>Code:</p>
+    <p>[
+    {% for team in tournament.seed_set.all %}
+        ('{{ team.team.team_name }}',{{ team.seed }}){% if not forloop.last %},{% endif %}
+    {% endfor %}
+    ]</p>
+{% endblock %}

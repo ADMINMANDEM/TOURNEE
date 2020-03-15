@@ -13,5 +13,13 @@
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://packy.db.elephantsql.com:5432/yoooatxz</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="Django default" uuid="6ad5afaa-9755-40a1-a4f3-1706d229c275">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <imported>true</imported>
+      <remarks>$PROJECT_DIR$/localTOURNEE/settings.py</remarks>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\Silas Nicholls\Documents\Git\localTOURNEE\db.sqlite3</jdbc-url>
+    </data-source>
   </component>
 </project>

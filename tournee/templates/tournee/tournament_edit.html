@@ -1,0 +1,16 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+
+{% if request.user.id == tournament.creatorid.account_id %}
+    <form method="post">
+      {% csrf_token %}
+      <br>
+      {{ form.as_p }}
+      <button type="submit" value="Update">Save changes</button>
+    </form>
+
+{% else %}
+    <p><strong>This is not your tournament. You cannot edit it. It is {{ tournament.tournament_name }} and is owned by {{ tournament.creatorid.name }}</strong></p>
+{% endif %}
+{% endblock %}

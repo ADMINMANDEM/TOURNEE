@@ -1,0 +1,17 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Team Name: {{ team.team_name }}</h1>
+
+    <p><strong>Players:</strong></p>
+  {% for player in team.members.all %}
+      {% if player.player_id ==  team.captain_id %}
+          <li><u><a href="{% url 'player-detail' player.player_id %}" style="color:#00ffb8">{{ player.player.name }}</a></u> AKA {{ player.player.account.username }} Joined: {{ player.date_joined }}</li>
+      {% else %}
+          <li><a href="{% url 'player-detail' player.player_id %}" >{{ player.player.name }}</a> AKA {{ player.player.account.username }} Joined: {{ player.date_joined }}</li>
+      {% endif %}
+  {% endfor %}
+    <div style="margin-left:20px;margin-top:20px">
+    <p>(Captain in green)</p>
+    </div>
+{% endblock %}

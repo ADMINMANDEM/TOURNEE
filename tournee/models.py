@@ -1,56 +1,97 @@
 from django.db import models
+from django.urls import reverse
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 # My models
-class Players(models.Model):
-    name = models.CharField(db_column="Player's_Name", blank=True, null=True, max_length=32)
-    team = models.CharField(db_column="Player's_Team", blank=True, null=True, max_length=32)
-    username = models.CharField(db_column='Username', blank=True, null=True, max_length=32)
-    password = models.CharField(db_column='Password', blank=True, null=True, max_length=16)
-    email = models.EmailField(db_column='Email', blank=True, null=True)
+# This defines the table player and gives the fields, their exceptions
+
+class Player(models.Model):
+    name = models.CharField(db_column="Player's_Name", null=True, max_length=32)
+    nationality = models.CharField(db_column="Nationality", null=True, max_length=32)
     bio = models.CharField(db_column='Bio', blank=True, null=True, max_length=5000)
-    teamid = models.CharField(db_column='TeamID', blank=True, null=True, max_length=8)
+    # This OneToOneField is what gives a player an account that they login with. When the user creates an account, they
+    # are immediately presented with the update profile page where they are made to enter their player details
+    # (bio, teams, etc.)
+    account = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
+    # The ManyToManyField is what links the teams the player is in to the player. The latter part means there is a
+    # through table (or linking table) between the teams and players.
+    teams = models.ManyToManyField('Team', through='Membership', through_fields=('player', 'team'), blank=True)
+
+    # This means that when we call get_absolute_url, it returns an id which is used for a url that goes to a page of the
+    # details of the player
+    def get_absolute_url(self):
+        return reverse('player-detail', args=[str(self.id)])
+
+    # This means when I refer to Player instead of Player Object (1), I get the name of the player
+    def __str__(self):
+        return self.name
 
 
-class Teams(models.Model):
-    team_name = models.CharField(db_column='Team_Name', blank=True, null=True, max_length=32)
-    playernames = models.TextField(db_column='Players', blank=True, null=True)
-    captainid = models.ForeignKey(Players, on_delete=models.CASCADE)
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Player.objects.create(account=instance)
 
 
-Players.teamid = models.ForeignKey(Teams, on_delete=models.CASCADE)
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.player.save()
 
 
-class Tournaments(models.Model):
-    tournament_name = models.CharField(db_column='Tournament_Name', blank=True, null=True, max_length=64)
+class Team(models.Model):
+    team_name = models.CharField(db_column='Team_Name', null=True, max_length=32)
+    # the captain is an id from Player. This means we can click on the captain and see their page
+    captain = models.ForeignKey(Player, on_delete=models.CASCADE, null=True)
+
+    def get_absolute_url(self):
+        return reverse('team-detail', args=[str(self.id)])
+
+    def __str__(self):
+        return self.team_name
+
+
+# This is the linking table between Player and Team
+class Membership(models.Model):
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="members")
+    # This is an extra field and means that whenever a player joins a team, the date at which they joined is recorded
+    date_joined = models.DateField(auto_now_add=True, null=True)
+
+
+class Tournament(models.Model):
+    tournament_name = models.CharField(db_column='Tournament_Name', null=True, max_length=64)
     tournament_prize = models.CharField(db_column='Tournament_Prize', blank=True, null=True, max_length=5000)
-    winners = models.CharField(db_column='Winners', blank=True, null=True, max_length=32)
-    teamnames = models.TextField(db_column='Teams', blank=True, null=True)
-    creatorid = models.ForeignKey(Players, on_delete=models.CASCADE)
-    requirements = models.CharField(db_column='Requirements', blank=True, null=True, max_length=5000)
-    rules = models.CharField(db_column='Rules', blank=True, null=True, max_length=5000)
-    time_and_date = models.DateTimeField(auto_now_add=True, db_column='Time_and_Date', blank=True, null=True)
-    scoreboard = models.TextField(db_column='Scoreboard', blank=True, null=True)
-    in_progress = models.BooleanField(db_column='In_Progress', blank=True, null=True)
-    tournamentline = models.IntegerField(db_column='TournamentLine', blank=True, null=True)
+    winners = models.CharField(db_column='Winners', null=True, max_length=32)
+    creatorid = models.ForeignKey(Player, on_delete=models.CASCADE)
+    requirements = models.CharField(db_column='Requirements', null=True, max_length=5000)
+    rules = models.CharField(db_column='Rules', null=True, max_length=5000)
+    time_and_date = models.DateTimeField(auto_now_add=False, db_column='Time_and_Date', null=True)
+    teams = models.ManyToManyField(Team, through='Seed', blank=True, through_fields=('tournament', 'team'))
+
+    def __str__(self):
+        return self.tournament_name
+
+    def get_absolute_url(self):
+        return reverse('tournament-detail', args=[str(self.id)])
 
 
-class TournamentResult(models.Model):
-    team_id = models.ForeignKey(Teams, on_delete=models.CASCADE)
-    result = models.SmallIntegerField(db_column='Result', blank=True, null=True)
-    number_of_teams = models.SmallIntegerField(db_column='Number_of_Teams', blank=True, null=True)
-    tournamentid = models.ForeignKey(Tournaments, on_delete=models.CASCADE)
+# Linking table for tournament and team
+class Seed(models.Model):
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='participants')
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    seed = models.IntegerField(db_column='Seed', null=True)
 
+    def __str__(self):
+        return str(self.seed)
 
-class GameScores(models.Model):
-    team_name = models.CharField(db_column='Team_Name', blank=True, null=True, max_length=32)
-    team_1_score = models.SmallIntegerField(db_column='Team_1_Score', blank=True, null=True)
-    team_2_score = models.SmallIntegerField(db_column='Team_2_Score', blank=True, null=True)
-    matchid = models.ForeignKey(TournamentResult, on_delete=models.CASCADE)
+    def get_absolute_url(self):
+        return reverse('tournament-detail', args=[str(self.tournament.id)])
 
 
 # BUILT IN DATABASE STUFF
-
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=150)
 

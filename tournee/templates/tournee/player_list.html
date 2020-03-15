@@ -1,0 +1,13 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Player List</h1>
+  <ul>
+    {% for Player in player_list %}
+        <li><a href="{{ Player.get_absolute_url }}">{{Player.name }}</a> - {{ Player.account.username }}</li>
+    {% empty %}
+        <li>There are no players.</li>
+    {% endfor %}
+  </ul>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Team List</h1>
+  <ul>
+    {% for Team in team_list %}
+        <li><a href="{{ Team.get_absolute_url }}">{{Team.team_name }}</a></li>
+    {% empty %}
+        <li>There are no teams.</li>
+    {% endfor %}
+  </ul>
+  <li><a href="{% url 'create-team' %}">Create your own team here</a></li>
+{% endblock %}
